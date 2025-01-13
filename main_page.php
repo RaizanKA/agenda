@@ -16,6 +16,7 @@
     $date = date("Y-m-d");
 
     if (isset($_POST['Submit'])) {
+        $_SESSION['namaKelas'] = $_POST['kelas'];
         $nkelas = $_POST['kelas'];
         $tanggal= $_POST['tanggal'];
         $awal= $_POST['awal'];
@@ -27,6 +28,8 @@
 
         $query = mysqli_query($koneksi, "INSERT INTO tb_riwayat(id_riwayat, id_kelas, id_guru, id_mapel, tanggal, id_awal, id_akhir, materi, id_kehadiran) 
         VALUES ('',$nkelas,$namaGuru,$mapel,'$tanggal',$awal,$akhir,'$materi',$keterangan)");
+
+        header('Location: tampilan_akhir.php');
     }
 
 
@@ -134,7 +137,7 @@
             position: absolute;
             background-color: #f6f6f6;
             min-width: 500px;
-            overflow: auto;
+            overflow: hidden;
             border: 1px solid #ddd;
             z-index: 1;
         }
