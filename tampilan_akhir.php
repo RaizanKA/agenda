@@ -38,7 +38,7 @@
             <td><?php echo $cek['tanggal'] ; ?></td>
             <td><?php echo $cek['ket_awal'] ; ?></td>
             <td><?php echo $cek['ket_akhir'] ; ?></td>
-            <td><?php echo $cek['guru'] ; ?></td>
+            <td><?php echo $cek['nama_guru'] ; ?></td>
             <td><?php echo $cek['mapel'] ; ?></td>
             <td><?php echo $cek['materi'] ; ?></td>
             <td><?php echo $cek['ket_kehadiran'] ; ?></td>
