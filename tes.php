@@ -3,9 +3,9 @@
     
     $query = mysqli_query($koneksi, "SELECT * from kelas");
 
-if (isset($_POST['selectedValue'])) {
-    $selectedValue = $_POST['selectedValue'];
-    if (isset($selectedValue) && $selectedValue != "") {
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+    if (isset($id) && $id != "") {
         $table = mysqli_query($koneksi, "SELECT tb_riwayat.id_riwayat, tb_riwayat.id_kelas, kelas.kelas, tb_riwayat.tanggal, tb_jam_awal.ket_awal, tb_jam_akhir.ket_akhir, guru.nama_guru, mapel.mapel, tb_riwayat.materi, kehadiran.ket_kehadiran
         from tb_riwayat
         inner join kelas on tb_riwayat.id_kelas = kelas.id_kelas
@@ -14,7 +14,7 @@ if (isset($_POST['selectedValue'])) {
         join guru on tb_riwayat.id_guru = guru.id_guru
         join kehadiran on tb_riwayat.id_kehadiran = kehadiran.id_kehadiran
         join mapel on tb_riwayat.id_mapel = mapel.id_mapel
-        where tb_riwayat.id_kelas = $selectedValue");
+        where tb_riwayat.id_kelas = $id");
     }
 }
 ?>
@@ -70,8 +70,8 @@ if (isset($_POST['selectedValue'])) {
     
     <div class="select-container">
         <!-- Form untuk memilih tabel -->
-        <form id="myForm" action="" method="POST">
-            <select id="tableSelector" name="selectedValue" onchange="submitForm()">
+        <form id="myForm" action="" method="GET">
+            <select id="tableSelector" name="id" onchange="submitForm()">
                 <option value="">-- Pilih Tabel --</option>
                 <?php
                     while ($kelas = $query->fetch_assoc()) {
@@ -80,7 +80,7 @@ if (isset($_POST['selectedValue'])) {
                             break;
                         }
                 ?>
-                <option value="<?php echo $kelas['id_kelas'] ; ?>" <?php echo (isset($selectedValue) && $selectedValue == "$valid") ? 'selected' : ''; ?>><?php echo $kelas['kelas'] ; ?></option>
+                <option value="<?php echo $kelas['id_kelas'] ; ?>" <?php echo (isset($id) && $id == "$valid") ? 'selected' : ''; ?>><?php echo $kelas['kelas'] ; ?></option>
                 <?php
                 
                     }
@@ -89,7 +89,7 @@ if (isset($_POST['selectedValue'])) {
         </form>
     </div>
     <?php
-        if (isset($selectedValue) && $selectedValue != "") {
+        if (isset($id) && $id != "") {
     ?><div>
     <table>
         <tr>
