@@ -1,20 +1,21 @@
 <?php
+session_start();
 include 'koneksi.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
+    $_SESSION['username'] = $username;
 
-    if($username == '' || $password = ''){
-        echo "Silahkan Masukan username dan password";
-    }else {
-        $select="SELECT * from user where username = $username";
-        $query = mysqli_query($koneksi,$select);
-        $cek = mysqli_fetch_array($query);
+    if($username == '' ){
+        $error = "Username $username tidak tersedia";
+    }else if ($password == ''){
+        $error = "password tidak sesuai";
+    } 
 
-        if($cek['username'] == $username){
-
-        }
+    if(empty($error)){
+        $_SESSION['username'] = $username;
+        header('Location: main_page.php');
     }
 
 

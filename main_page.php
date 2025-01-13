@@ -1,7 +1,14 @@
 <?php
     session_start();
     include "koneksi.php";
-    $query = mysqli_query($koneksi, "SELECT * from kelas");
+    $username = $_SESSION['username'];
+    $user = mysqli_query($koneksi, "SELECT * FROM user where username = '$username'");
+    $id = mysqli_fetch_array($user);
+    $a = $id["id_user"];
+    $kelas = mysqli_query($koneksi, "SELECT * FROM kelas where id_user = $a ");
+    $cek = mysqli_fetch_array($kelas);
+    $namaKelas = $cek['kelas'];
+    $id_kelas = $cek['id_kelas'];
     $request1 = mysqli_query($koneksi, "SELECT * from tb_jam_awal");
     $request2 = mysqli_query($koneksi, "SELECT * from tb_jam_akhir");
     $request3 = mysqli_query($koneksi, "SELECT * from mapel");
@@ -124,18 +131,18 @@
 <body>
 
 <div id="section1" class="section active">
-    <h2>Section 1</h2>
+    <h2>Agenda Kelas</h2>
     <p>Kelas:</p>
-    <input type="text" readonly value="">
+    <input type="text" readonly value="<?php echo $namaKelas ?>">
     <p>Pilih Tanggal:</p>
-    <input type="date" name="kelas" id="" max="<?php echo $date ; ?>">
+    <input type="date" name="tanggal" id="" max="<?php echo $date ; ?>">
     <div class="navigation">
         <button onclick="nextSection(2)">Lanjutkan</button>
     </div>
 </div>
 
 <div id="section2" class="section">
-    <h2>Section 2</h2>
+    <h2>Agenda Kelas</h2>
     <p>Jam Masuk :</p>
     <select name="awal" id="jam_awal" onchange="updateJamAkhir()">
                     <option value="" data-jam="<?php echo 0 ;?>"></option>
@@ -167,7 +174,7 @@
 </div>
 
 <div id="section3" class="section">
-    <h2>Section 3</h2>
+    <h2>Agenda Kelas</h2>
     <p>Nama Guru:</p>
     <div class="form-group">
         <div class="dropdown">
@@ -177,7 +184,6 @@
             <div id="myDropdown" class="dropdown-content">
                 <input type="text" placeholder="Search.." id="myInput" onkeyup="filterFunction()">
                 <a onclick="empty()">--Please Choose--</a>
-                <!-- ni untuk selectnya, boleh disesuaikan dengan kaurang punya, saya disini pakai mysqli_fetch_array dan kau rang beda, jadi sesuaikan aja -->
                 <?php
                     $query = "SELECT * FROM guru";
                     $resultadu =mysqli_query($koneksi, $query); 
@@ -209,9 +215,9 @@
 </div>
 
 <div id="section4" class="section">
-    <h2>Section 4</h2>
+    <h2>Agenda Kelas</h2>
     <p>Materi :</p>
-    <textarea id="input4" placeholder="Masukkan teks"></textarea>
+    <textarea id="input4" name="materi" placeholder="Masukkan teks"></textarea>
     <p>Kehadiran Guru :</p>
     <select name="kehadiran" id="">
                     <option value=""></option>
@@ -265,48 +271,47 @@
 
     function submitQuiz() {
         saveAnswer();
+        <?php
+            $tanggal = $_POST['tanggal'];
+            $jamMasuk = $_POST['awal'];
+            $jamKeluar = $_POST['akhir'];
+            $namaGuru = $_POST['id_guru'];
+            $mapel = $_POST['mapel'];
+            $materi = $_POST['materi'];
+            $kehadiran = $_POST['kehadiran'];
+            $masukData = mysqli_query($koneksi, "INSERT INTO `tb_riwayat`(id_guru, id_mapel, tanggal, id_awal, id_akhir, materi, id_kehadiran) VALUES ($namaGuru,$mapel,$tanggal,$jamMasuk,$jamKeluar,$materi,$kehadiran)")
+        ?>
         alert('Quiz selesai! Jawaban Anda: ' + JSON.stringify(answers));
     }
 
     function updateJamAkhir() {
-    // Ambil nilai yang dipilih pada "Jam Awal" dan konversi ke integer
     var jamAwalSelected = document.querySelector('#jam_awal option:checked');
     var jamAwalValue = parseInt(jamAwalSelected ? jamAwalSelected.getAttribute('data-jam') : "0", 10);  // Konversi ke integer
 
-    console.log("Jam Awal Value: ", jamAwalValue); // Debugging nilai Jam Awal
-
-    // Mendapatkan elemen dropdown Jam Akhir
+    console.log("Jam Awal Value: ", jamAwalValue); 
     var jamAkhirSelect = document.getElementById('jam_akhir');
 
-    // Jika Jam Awal belum dipilih, nonaktifkan Jam Akhir
     if (isNaN(jamAwalValue) || jamAwalValue === 0) {
-        jamAkhirSelect.disabled = true;  // Nonaktifkan dropdown Jam Akhir
+        jamAkhirSelect.disabled = true;  
     } else {
-        jamAkhirSelect.disabled = false;  // Aktifkan dropdown Jam Akhir
+        jamAkhirSelect.disabled = false;  
     }
 
-    // Mendapatkan semua opsi Jam Akhir
     var jamAkhirOptions = document.querySelectorAll("#jam_akhir option");
 
     jamAkhirOptions.forEach(function(option) {
-        // Ambil nilai data-jam dari setiap opsi Jam Akhir dan konversi ke integer
-        var jamAkhirValue = parseInt(option.getAttribute('data-jam'), 10);  // Konversi ke integer
-
-        console.log("Jam Akhir Value: ", jamAkhirValue); // Debugging nilai Jam Akhir
-
-        // Periksa apakah jamAwalValue dan jamAkhirValue valid
+        var jamAkhirValue = parseInt(option.getAttribute('data-jam'), 10);  
+        console.log("Jam Akhir Value: ", jamAkhirValue); 
         if (!isNaN(jamAwalValue) && !isNaN(jamAkhirValue)) {
-            // Jika nilai Jam Akhir lebih besar atau sama dengan Jam Awal, tampilkan opsi tersebut
             if (jamAkhirValue >= jamAwalValue) {
-                option.style.display = "block";  // Menampilkan opsi
+                option.style.display = "block";  
             } else {
-                option.style.display = "none";  // Menyembunyikan opsi
+                option.style.display = "none"; 
             }
         }
     });
 }
 
-// Panggil fungsi updateJamAkhir() saat halaman dimuat untuk mengatur status awal
     window.onload = updateJamAkhir;
 
     function myFunction() {
