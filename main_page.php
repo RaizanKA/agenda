@@ -49,6 +49,8 @@
             background-color: #f4f4f9;
             color: #333;
             margin: 20px;
+            overflow: hidden;
+
         }
         h2 {
             color: #444;
@@ -137,9 +139,11 @@
             position: absolute;
             background-color: #f6f6f6;
             min-width: 500px;
-            overflow: hidden;
             border: 1px solid #ddd;
             z-index: 1;
+            max-height: 200px;
+            overflow-y:auto;
+
         }
 
         .dropdown-content a {
