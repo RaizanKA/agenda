@@ -2,9 +2,7 @@
     include "koneksi.php";    
     session_start(); 
     $username = $_SESSION['username'];
-    $query = mysqli_query($koneksi, "SELECT * from kelas");
-
-        $table = mysqli_query($koneksi, "SELECT * from guru");
+    $table = mysqli_query($koneksi, "SELECT * FROM  mapel");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,8 +16,8 @@
             padding: 20px;
             background-color: white;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             max-height: 400px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         /* Tabel */
@@ -166,21 +164,22 @@
                     <thead>
                     <tr>
                         <th>No</th>
-                        <th>Nama Guru</th>
-                        <th>Keterangan</th>
+                        <th>Mapel</th>
+                        <th>Fitur</th>
                     </tr>
                     </thead>
                     <?php
-                    $i = 1;
+                        $i = 1;
                         while ($data = $table-> fetch_assoc()) {
                     ?>
                     <tr>
-                        <td><?php echo $i ; ?></td>
-                        <td><?php echo $data['nama_guru'] ; ?></td>
-                        <td><a href="">hapus</a>/<a href="">ganti</a></td>
-                    </tr>
+                        <td><?php echo $i++ ; ?></td>
+                        <td><?php echo $data['mapel'] ; ?></td>
+                        <td>
+                            <a href="#">Hapus</a> /
+                            <a href="#">Edit</a>
+                        </td>
                     <?php
-                    $i++;
                         }
                     ?>
                 </table>
@@ -190,6 +189,11 @@
     </div>
 
     <script src="dashboard.js"></script>
-    <script></script>
+    <script>
+        function submitForm() {
+            // Kirim form otomatis saat memilih nilai
+            document.getElementById('myForm').submit();
+        }
+    </script>
 </body>
 </html>

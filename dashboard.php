@@ -18,6 +18,7 @@ if (isset($_GET['id'])) {
         where tb_riwayat.id_kelas = $id");
     }
 }
+$k ="";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,12 +26,14 @@ if (isset($_GET['id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="dashboard.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
     <style>
         .table-container {
             overflow-x: auto;  /* Untuk scroll horizontal */
             padding: 20px;
             background-color: white;
             border-radius: 8px;
+            max-height: 400px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
@@ -102,7 +105,19 @@ if (isset($_GET['id'])) {
             box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
             outline: none;
         }
-
+        .export-btn {
+            margin: 20px auto;
+            text-align: left;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .export-btn:hover {
+            background-color: #45a049;
+        }
         /* Media Queries: Responsif untuk layar kecil */
         @media (max-width: 768px) {
             .select-container {
@@ -153,8 +168,8 @@ if (isset($_GET['id'])) {
             <div class="logo">Logo</div>
             <ul class="nav-links">
                 <li><a href="dashboard.php">Dashboard</a></li>
-                <li><a href="#">Data Guru</a></li>
-                <li><a href="#">Data Mapel</a></li>
+                <li><a href="dashboardGuru.php">Data Guru</a></li>
+                <li><a href="dataMapel.php">Data Mapel</a></li>
                 <li><a href="#">Profile</a></li>
             </ul>
         </nav>
@@ -197,7 +212,7 @@ if (isset($_GET['id'])) {
                     if (isset($id) && $id != "") {
                 ?>
                 <div class="table-container">
-                <table class="responsive-table">
+                <table class="responsive-table" id="dataTable">
                     <thead>
                     <tr>
                         <th>Kelas</th>
@@ -212,6 +227,7 @@ if (isset($_GET['id'])) {
                     </thead>
                     <?php
                         while ($data = $table-> fetch_assoc()) {
+                            $k = $data['kelas'];
                     ?>
                     <tr>
                         <td style="font-weight: bold;"><?php echo $data['kelas'] ; ?></td>
@@ -227,6 +243,7 @@ if (isset($_GET['id'])) {
                         }
                     ?>
                 </table>
+                <button class="export-btn" onclick="exportToExcel()">Ekspor ke Excel</button>
                 </div>
                 <?php
                     }
@@ -240,6 +257,11 @@ if (isset($_GET['id'])) {
         function submitForm() {
             // Kirim form otomatis saat memilih nilai
             document.getElementById('myForm').submit();
+        }
+        function exportToExcel() {
+            var table = document.getElementById("dataTable");
+            var wb = XLSX.utils.table_to_book(table, {sheet: "<?php echo $k; ?>"});
+            XLSX.writeFile(wb, "<?php echo $k; ?>_data_kelas.xlsx");
         }
     </script>
 </body>
