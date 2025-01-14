@@ -15,8 +15,10 @@ if (isset($_GET['id'])) {
         join kehadiran on tb_riwayat.id_kehadiran = kehadiran.id_kehadiran
         join mapel on tb_riwayat.id_mapel = mapel.id_mapel
         where tb_riwayat.id_kelas = $id");
+        
     }
 }
+$k ="";
 ?>
 
 <!DOCTYPE html>
@@ -63,7 +65,22 @@ if (isset($_GET['id'])) {
         th {
             background-color: #f4f4f4;
         }
+        .export-btn {
+            margin: 20px auto;
+            display: block;
+            text-align: center;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .export-btn:hover {
+            background-color: #45a049;
+        }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 </head>
 <body>
     <h1>Dashboard Pilihan Tabel</h1>
@@ -82,54 +99,64 @@ if (isset($_GET['id'])) {
                 ?>
                 <option value="<?php echo $kelas['id_kelas'] ; ?>" <?php echo (isset($id) && $id == "$valid") ? 'selected' : ''; ?>><?php echo $kelas['kelas'] ; ?></option>
                 <?php
-                
                     }
                 ?>
-                </select>
+            </select>
         </form>
-    </div>
-    <?php
-        if (isset($id) && $id != "") {
-    ?><div>
-    <table>
-        <tr>
-            <th>Kelas</th>
-            <th>Tanggal</th>
-            <th>Jam Awal</th>
-            <th>Jam AKhir</th>
-            <th>Guru</th>
-            <th>Mapel</th>
-            <th>Materi</th>
-            <th>Kehadiran</th>
-        </tr>
-        <?php
-            while ($data = $table-> fetch_assoc()) {
-        ?>
-        <tr>
-            <td><?php echo $data['kelas'] ; ?></td>
-            <td><?php echo $data['tanggal'] ; ?></td>
-            <td><?php echo $data['ket_awal'] ; ?></td>
-            <td><?php echo $data['ket_akhir'] ; ?></td>
-            <td><?php echo $data['nama_guru'] ; ?></td>
-            <td><?php echo $data['mapel'] ; ?></td>
-            <td><?php echo $data['materi'] ; ?></td>
-            <td><?php echo $data['ket_kehadiran'] ; ?></td>
-        </tr>
-        <?php
-            }
-        ?>
-    </table>
-        
     </div>
 
     <?php
+        if (isset($id) && $id != "") {
+    ?>
+    <div>
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    <th>Kelas</th>
+                    <th>Tanggal</th>
+                    <th>Jam Awal</th>
+                    <th>Jam AKhir</th>
+                    <th>Guru</th>
+                    <th>Mapel</th>
+                    <th>Materi</th>
+                    <th>Kehadiran</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                    while ($data = $table->fetch_assoc()) {
+                        $k = $data['kelas'];
+                ?>
+                <tr>
+                    <td><?php echo $data['kelas'] ; ?></td>
+                    <td><?php echo $data['tanggal'] ; ?></td>
+                    <td><?php echo $data['ket_awal'] ; ?></td>
+                    <td><?php echo $data['ket_akhir'] ; ?></td>
+                    <td><?php echo $data['nama_guru'] ; ?></td>
+                    <td><?php echo $data['mapel'] ; ?></td>
+                    <td><?php echo $data['materi'] ; ?></td>
+                    <td><?php echo $data['ket_kehadiran'] ; ?></td>
+                </tr>
+                <?php
+                    }
+                ?>
+            </tbody>
+        </table>
+        <button class="export-btn" onclick="exportToExcel()">Ekspor ke Excel</button>
+    </div>
+    <?php
         }
     ?>
-    
     <script>
         function submitForm() {
             // Kirim form otomatis saat memilih nilai
             document.getElementById('myForm').submit();
+        }
+
+        function exportToExcel() {
+            var table = document.getElementById("dataTable");
+            var wb = XLSX.utils.table_to_book(table, {sheet: "<?php echo $k; ?>"});
+            XLSX.writeFile(wb, "<?php echo $k; ?>_data_kelas.xlsx");
         }
     </script>
 </body>
