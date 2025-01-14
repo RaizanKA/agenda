@@ -15,8 +15,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if(empty($error)){
         $_SESSION['username'] = $username;
-        header('Location: main_page.php');
+        $query = mysqli_query($koneksi,"SELECT * FROM user where username = '$username'");
+        $level = mysqli_fetch_array($query);
+        if($level['level'] == "siswa"){
+            header('Location: dashboardSiswa.php');
+        }else if($level['level'] == "admin"){
+            header('Location: dashboard.php');
+        } else{
+            header('Location: login.php');
+        }
     }
+
 
 
 }
