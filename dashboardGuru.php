@@ -177,7 +177,7 @@
                     <tr>
                         <td><?php echo $i ; ?></td>
                         <td><?php echo $data['nama_guru'] ; ?></td>
-                        <td><a href="">hapus</a>/<a href="">ganti</a></td>
+                        <td><a href="hapusGuru.php?id=<?= $data['id_guru'] ?>">hapus</a>/<a href="gantiGuru.php?id=<?= $data['id_guru'] ?>">ganti</a></td>
                     </tr>
                     <?php
                     $i++;
